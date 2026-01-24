@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Posts App</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 min-h-screen flex items-center justify-center">
     <div class="bg-white p-8 rounded-lg shadow-md w-96">
@@ -24,6 +25,22 @@
 
         <a href="register.html" class="text-blue-500 hover:underline">Don't have an account? Register</a>
     </div>
+    
+    <script>
+        const loginForm = document.getElementById('login-form')
+
+        loginForm.addEventListener('submit', (e) => {
+            // agar tidak reload saat submit
+            e.preventDefault()
+            const email = document.getElementById('email').value
+            const password = document.getElementById('password').value
+
+            console.log(`Email: `, email)
+            console.log(`Password: `, password)
+
+            alert(`Halo ${email}, selamat datang!`)
+        })
+    </script>
 
 </body>
 </html>

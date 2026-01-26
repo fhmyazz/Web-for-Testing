@@ -10,9 +10,12 @@
 <body class="bg-gray-100 min-h-screen flex items-center justify-center">
     <div class="bg-white p-8 rounded-lg shadow-md w-96">
         <h1 class="text-2xl font-bold mb-6 text-center">Login</h1>
+        <div id="error-message" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-4">
+            <span id="error-text"></span>
+        </div>
         <form id="login-form">
-            <label for="email" class="block font-bold mb-2">Email</label>
-            <input type="email" id="email" name="email" placeholder="Email" 
+            <label for="username" class="block font-bold mb-2">Username</label>
+            <input type="text" id="username" name="username" placeholder="Username" 
                 class="w-full px-4 py-2 border rounded-lg mb-4" required>
             <label for="password" class="block font-bold mb-2">Password</label>
             <input type="password" id="password" name="password" placeholder="Password" 
@@ -28,18 +31,42 @@
     
     <script>
         const loginForm = document.getElementById('login-form')
+        const errorDiv = document.getElementById('error-message')
+        const errorText = document.getElementById('error-text')
 
-        loginForm.addEventListener('submit', (e) => {
+        loginForm.addEventListener('submit', async (e) => {
             // agar tidak reload saat submit
             e.preventDefault()
-            const email = document.getElementById('email').value
+            const username = document.getElementById('username').value
             const password = document.getElementById('password').value
 
-            console.log(`Email: `, email)
-            console.log(`Password: `, password)
-
-            alert(`Halo ${email}, selamat datang!`)
+            errorDiv.classList.add('hidden')
+            
+            try {
+                const response = await fetch('http://localhost:3000/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json'},
+                    body: JSON.stringify({ username, password })
+                })
+                const data = await response.json()
+                
+                if (response.ok) {
+                    localStorage.setItem('token', data.data.token)
+                    
+                    window.location.href = 'posts.html'
+                } else {
+                    showError(data.error)
+                }
+            } catch (error) {
+                console.error('Network Error: ', error)
+                showError('Network Error. Please try again later.')
+            }
         })
+
+        function showError(message) {
+            errorText.textContent = message
+            errorDiv.classList.remove('hidden')
+        }
     </script>
 
 </body>

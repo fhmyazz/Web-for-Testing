@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+    <div class="bg-white p-8 rounded-lg shadow-md w-96">
+        <h1 class="text-2xl font-bold mb-6 text-center">Register</h1>
+
+        <div id="error-message" class="hidden bg-red-100 border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+            <span id="error-text"></span>
+        </div>
+        <div id="success-message" class="hidden bg-green-100 border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+            <span id="success-text"></span>
+        </div>
+
+        <form id="register-form">
+            <label for="username" class="block font-bold mb-2">Username</label>
+            <input type="text" id="username" name="username" placeholder="Username" class="w-full px-4 py-2 border rounded-lg mb-4">
+
+            <label for="email" class="block font-bold mb-2">Email</label>
+            <input type="email" id="email" name="email" placeholder="Email" class="w-full px-4 py-2 border rounded-lg mb-4">
+
+            <label for="password" class="block font-bold mb-2">Password</label>
+            <input type="password" id="password" name="password" placeholder="Password" class="w-full px-4 py-2 border rounded-lg mb-4">
+
+            <label for="confirm-password" class="block font-bold mb-2">Confirm Password</label>
+            <input type="password" id="confirm-password" name="confirm-password" placeholder="Password" class="w-full px-4 py-2 border rounded-lg mb-4">
+
+            <button type="submit" id="register-button" class="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 disabled:cursor-not-allowed">
+                Register
+            </button>
+
+            <p class="mt-4 text-center text-sm">
+                <a href="./login.html" class="text-blue-500 hover:underline">
+                    Already have an account? Login
+                </a>
+            </p>
+        </form>
+    </div>
+
+    <script>
+        const registerForm = document.getElementById('register-form')
+        const registerButton = document.getElementById('register-button')
+        const errorDiv = document.getElementById('error-message')
+        const errorText = document.getElementById('error-text')
+        const successDiv = document.getElementById('success-message')
+        const successText = document.getElementById('success-text')
+
+        registerForm.addEventListener('submit', async (e) => {
+            e.preventDefault()
+
+            const username = document.getElementById('username').value
+            const email = document.getElementById('email').value
+            const password = document.getElementById('password').value
+            const confirmPassword = document.getElementById('confirm-password').value
+
+            if(!username || !email || !password || !confirmPassword) showError("Please fill all fields.")
+
+            if(password !== confirmPassword) {
+                showError('Please make sure password is matched')
+            }else{
+                disablingButton(registerButton, 'Loading...')
+                try{
+                    const response = await fetch('http://localhost:3000/api/auth/register', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({username, email, password})
+                    })
+                    const data = await response.json()
+    
+                    if(response.ok){
+                        showSuccess('Successfully registered! Redirecting...')
+                        disablingButton(registerButton, 'Loading...')
+    
+                        setTimeout(() => {
+                            localStorage.setItem('token', data.data.token)
+                            window.location.href = 'login.html'
+                        }, 1500)
+                    }else{
+                        enablingButton(registerButton, 'Register')
+                        showError(data.error)
+                    }
+                }catch(error){
+                    enablingButton(registerButton, 'Register')
+                    console.error('Network Error:', error)
+                    showError('Network Error. Please try again later.')
+                }
+            }
+        })
+                
+
+        function disablingButton(button, buttonText){
+            button.disabled = true
+            button.textContent = buttonText
+            button.classList.remove('hover:bg-blue-600')
+            button.classList.remove('bg-blue-500')
+            button.classList.add('bg-blue-300')
+        }
+
+        function enablingButton(button, buttonText){
+            button.disabled = false
+            button.textContent = buttonText
+            button.classList.remove('bg-blue-300')
+            button.classList.add('bg-blue-500')
+            button.classList.add('hover:bg-blue-600')
+        }
+
+        function showError(message){
+            errorText.textContent = message
+            successDiv.classList.add('hidden')
+            errorDiv.classList.remove('hidden')
+        }
+        
+        function showSuccess(message){
+            successText.textContent = message
+            errorDiv.classList.add('hidden')
+            successDiv.classList.remove('hidden')
+        }
+    </script>
+    
+</body>
+</html>

@@ -86,35 +86,35 @@
             if(password !== confirmPassword) {
                 showError('Please make sure password is matched')
                 return
-            }else{
-                disablingButton(registerButton, 'Loading...')
-                try{
-                    const response = await fetch('http://localhost:3000/api/auth/register', {
-                        method: 'POST',
-                        headers: {'Content-Type': 'application/json'},
-                        body: JSON.stringify({username, email, password})
-                    })
-                    const data = await response.json()
-    
-                    if(response.ok){
-                        showSuccess('Successfully registered! Redirecting...')
-                        disablingButton(registerButton, 'Loading...')
-    
-                        setTimeout(() => {
-                            localStorage.setItem('token', data.data.token)
-                            window.location.href = 'login.html'
-                        }, 1500)
-                    }else{
-                        enablingButton(registerButton, 'Register')
-                        showError(data.error)
-                    }
-                }catch(error){
-                    enablingButton(registerButton, 'Register')
-                    console.error('Network Error:', error)
-                    showError('Network Error. Please try again later.')
-                }
             }
-        })
+            disablingButton(registerButton, 'Loading...')
+
+            try{
+                const response = await fetch('http://localhost:3000/api/auth/register', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({username, email, password})
+                })
+                const data = await response.json()
+
+                if(response.ok){
+                    showSuccess('Successfully registered! Redirecting...')
+                    disablingButton(registerButton, 'Loading...')
+
+                    setTimeout(() => {
+                        localStorage.setItem('token', data.data.token)
+                        window.location.href = 'login.html'
+                    }, 1500)
+                }else{
+                    enablingButton(registerButton, 'Register')
+                    showError(data.error)
+                }
+            }catch(error){
+                enablingButton(registerButton, 'Register')
+                console.error('Network Error:', error)
+                showError('Network Error. Please try again later.')
+            }
+            })
                 
 
         function disablingButton(button, buttonText){

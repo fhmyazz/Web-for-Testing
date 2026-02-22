@@ -34,7 +34,7 @@
             </div>
 
             <label for="confirm-password" class="block font-bold mb-2">Confirm Password</label>
-            <input type="password" id="confirm-password" name="confirm-password" placeholder="Password" class="w-full px-4 py-2 border rounded-lg mb-4">
+            <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm Password" class="w-full px-4 py-2 border rounded-lg mb-4">
 
             <button type="submit" id="register-button" class="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 disabled:cursor-not-allowed">
                 Register
@@ -188,7 +188,7 @@
         }
 
         function isValidEmail(email){
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]$/
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
             return emailRegex.test(email)
         }
     </script>

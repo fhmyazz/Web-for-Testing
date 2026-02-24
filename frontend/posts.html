@@ -41,7 +41,9 @@
             Loading Posts...
         </div>
 
-        <div id="empty-state" class="hidden text-center text-gray-500 py-8">
+        <div id="empty-state" 
+            role="status"
+            class="hidden text-center text-gray-500 py-8">
             <p>No Post yet</p>
             <a href="create-post.html" class="text-blue-500 hover:underline">Create your first post here</a>
         </div>
@@ -98,6 +100,7 @@
             const container = postsContainer
             const card = document.createElement('div')
 
+            card.setAttribute('role', 'article')
             card.className = 'bg-white p-6 rounded-lg mb-4'
             card.innerHTML = `
                 <h2 class="text-xl font-bold mb-2">${post.title}</h2>
